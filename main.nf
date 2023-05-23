@@ -103,6 +103,7 @@ process PLOT_BLEEDING_CORRECTION {
     output:
       path "bleed_correction_results/basis-functions.pdf", emit: basis_functions
       path "bleed_correction_results/*_bleed_vectors.pdf", emit: bleed_vectors
+      path "bleed_correction_results/*_bleeding_plot.pdf", emit: bleeding_plots
 
     script:
       """
