@@ -1,0 +1,14 @@
+.DS_Store
+
+# Nextflow Run files
+work
+nextflow
+.nextflow
+.nextflow.log*
+pipeline_report.html
+pipeline_trace.txt
+pipeline_dag.html
+
+# Local Test files
+A1_spaceranger_output
+out
