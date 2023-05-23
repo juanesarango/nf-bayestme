@@ -50,7 +50,7 @@ process FILTER_GENES {
       path ann_dataset
 
     output:
-      path "${params.sample}_filtered.h5ad"
+      path "${params.sample}_filtered.h5ad", emit: ann_filtered_dataset
 
     script:
       """
@@ -74,8 +74,8 @@ process BLEED_CORRECTION {
       path ann_filtered_dataset
 
     output:
-      path "${params.sample}_filtered_corrected.h5ad"
-      path "bleed_correction_results.h5"
+      path "${params.sample}_filtered_corrected.h5ad", emit: ann_filtered_corrected_dataset
+      path "bleed_correction_results.h5", emit: bleed_correction_results
 
     script:
       """
@@ -96,19 +96,22 @@ process PLOT_BLEEDING_CORRECTION {
     memory '4 GB'
 
     input:
+      path ann_filtered_dataset
       path ann_filtered_corrected_dataset
       path bleed_correction_results
 
     output:
-      path "${params.outdir}/bleed_correction_results/basis-functions.pdf"
-      path "${params.outdir}/bleed_correction_results/*_bleed_vectors.pdf"
+      path "bleed_correction_results/basis-functions.pdf", emit: basis_functions
+      path "bleed_correction_results/*_bleed_vectors.pdf", emit: bleed_vectors
 
     script:
       """
-      plot_bleeding_correction --raw-adata dataset_filtered.h5ad \
+      mkdir -p bleed_correction_results
+      plot_bleeding_correction \
+          --raw-adata ${ann_filtered_dataset} \
           --corrected-adata ${ann_filtered_corrected_dataset} \
           --bleed-correction-results ${bleed_correction_results} \
-          --output-dir ${params.outdir}/bleed_correction_results \
+          --output-dir bleed_correction_results \
           --verbose
       """
       .stripIndent()
@@ -119,7 +122,7 @@ workflow {
     ann_filtered_data = FILTER_GENES(ann_data)
 
     bleeding_results = BLEED_CORRECTION(ann_filtered_data)
-    PLOT_BLEEDING_CORRECTION(bleeding_results)
+    PLOT_BLEEDING_CORRECTION(ann_filtered_data, bleeding_results)
 }
 
 workflow.onComplete {
