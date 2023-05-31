@@ -23,7 +23,7 @@ log.info """\
 
 process SPACERANGER_TO_ANNDATA {
     tag "Visium/10x spaceranger input to anndata format: ${params.sample}"
-    publishDir params.outdir
+    publishDir params.outdir, mode: 'copy'
     cpus params.cores
     memory '4 GB'
 
@@ -42,7 +42,7 @@ process SPACERANGER_TO_ANNDATA {
 
 process FILTER_GENES {
     tag "Filter Genes: ${params.sample}"
-    publishDir params.outdir
+    publishDir params.outdir, mode: 'copy'
     cpus params.cores
     memory '4 GB'
 
@@ -66,7 +66,7 @@ process FILTER_GENES {
 
 process BLEED_CORRECTION {
     tag "Bleed Correction: ${params.sample}"
-    publishDir params.outdir
+    publishDir params.outdir, mode: 'copy'
     cpus params.cores
     memory '10 GB'
 
@@ -91,7 +91,7 @@ process BLEED_CORRECTION {
 
 process PLOT_BLEEDING_CORRECTION {
     tag "Plot Bleeding Correction: ${params.sample}"
-    publishDir params.outdir
+    publishDir params.outdir, mode: 'copy'
     cpus params.cores
     memory '4 GB'
 
